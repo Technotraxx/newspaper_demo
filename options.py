@@ -1,15 +1,35 @@
 import streamlit as st
-from article_utils import get_article_info_with_retry, generate_markdown, filter_and_adjust_links
 from search_api import search_duckduckgo
+from article_utils import get_article_info_with_retry, generate_markdown, filter_and_adjust_links
 
+# Funktion für die Option "Single Article"
 def single_article_option():
     url = st.text_input("Enter the URL of the news article:")
     if url:
         try:
+            # Informationen extrahieren
             info = get_article_info_with_retry(url)
+
+            # Markdown generieren
             markdown = generate_markdown(info, url, include_summary=False)
             markdown_with_summary = generate_markdown(info, url, include_summary=True)
 
+            # Platz für den Download-Button
+            st.divider()
+            st.download_button(
+                label="Download Article",
+                data=markdown,
+                file_name="article.md",
+                mime="text/markdown"
+            )
+            st.download_button(
+                label="Download with Summary",
+                data=markdown_with_summary,
+                file_name="article_with_summary.md",
+                mime="text/markdown"
+            )
+
+            # Anzeige der extrahierten Informationen
             st.header(info['title'])
             st.write(url)
             st.write(f"Authors: {', '.join(info['authors'])} | Publish Date: {info['publish_date']}")
@@ -28,37 +48,52 @@ def single_article_option():
                 for video in info['videos']:
                     st.video(video)
 
-            return markdown, markdown_with_summary
-
         except Exception as e:
             st.error(f"An error occurred: {e}")
-    return "", ""
 
+# Funktion für die Option "Multiple Articles"
 def multiple_articles_option():
     urls = st.text_area("Enter the URLs of the news articles (one per line):")
     if urls:
         url_list = urls.split('\n')
         all_info = []
-        for idx, url in enumerate(url_list):
+        for url in url_list:
             url = url.strip()
             if url:
                 try:
                     info = get_article_info_with_retry(url)
-                    all_info.append((idx, info, url))  # Speichere idx mit der info und url
+                    all_info.append(info)
                 except Exception as e:
                     st.error(f"An error occurred with URL {url}: {e}")
 
+        # Markdown für alle Artikel generieren
         markdown = ""
         markdown_with_summary = ""
-        for idx, info, url in all_info:
+        for info in all_info:
             markdown += generate_markdown(info, url, include_summary=False) + "\n\n"
             markdown_with_summary += generate_markdown(info, url, include_summary=True) + "\n\n"
 
-        for idx, info, url in all_info:
+        # Platz für den Download-Button
+        st.divider()
+        st.download_button(
+            label="Download Articles",
+            data=markdown,
+            file_name="articles.md",
+            mime="text/markdown"
+        )
+        st.download_button(
+            label="Download with Summary",
+            data=markdown_with_summary,
+            file_name="articles_with_summary.md",
+            mime="text/markdown"
+        )
+
+        # Anzeigen der extrahierten Informationen für alle Artikel
+        for info in all_info:
             st.header(info['title'])
             st.write(url)
             st.write(f"Authors: {', '.join(info['authors'])} | Publish Date: {info['publish_date']}")
-            st.text_area("Article Text", info["text"], height=300, key=f"text_{idx}")
+            st.text_area("Article Text", info["text"], height=300, key=url)
 
             with st.expander("Summary"):
                 st.write(info["summary"])
@@ -73,18 +108,35 @@ def multiple_articles_option():
                 for video in info['videos']:
                     st.video(video)
 
-        return markdown, markdown_with_summary
-    return "", ""
-
+# Funktion für die Option "Links in Article"
 def links_in_article_option():
     url = st.text_input("Enter the URL of the news article:")
     if url:
         try:
+            # Informationen extrahieren
             info = get_article_info_with_retry(url)
             links = filter_and_adjust_links(info['links'], url)
+
+            # Markdown generieren
             markdown = generate_markdown(info, url, include_summary=False)
             markdown_with_summary = generate_markdown(info, url, include_summary=True)
 
+            # Platz für den Download-Button
+            st.divider()
+            st.download_button(
+                label="Download Article",
+                data=markdown,
+                file_name="article.md",
+                mime="text/markdown"
+            )
+            st.download_button(
+                label="Download with Summary",
+                data=markdown_with_summary,
+                file_name="article_with_summary.md",
+                mime="text/markdown"
+            )
+
+            # Anzeige der extrahierten Informationen
             st.header(info['title'])
             st.write(url)
             st.write(f"Authors: {', '.join(info['authors'])} | Publish Date: {info['publish_date']}")
@@ -107,12 +159,10 @@ def links_in_article_option():
                 for video in info['videos']:
                     st.video(video)
 
-            return markdown, markdown_with_summary
-
         except Exception as e:
             st.error(f"An error occurred: {e}")
-    return "", ""
 
+# Funktion für die Option "Search DuckDuckGo"
 def search_duckduckgo_option():
     st.header("Search DuckDuckGo")
     query = st.text_input("Enter a search term:")
