@@ -5,6 +5,7 @@ import nltk
 from urllib.parse import urljoin, urlparse
 import base64
 from search_api import search_news
+import requests
 
 # Sicherstellen, dass der Punkt-Tokenizer heruntergeladen ist
 nltk.download('punkt', quiet=True)
@@ -101,12 +102,35 @@ if markdown_to_download:
         mime="text/markdown"
     )
 
+def get_article_info_with_retry(url, retries=3):
+    config = Configuration()
+    config.browser_user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0'
+    article = Article(url, config=config)
+    for _ in range(retries):
+        try:
+            article.download()
+            article.parse()
+            article.nlp()
+            return {
+                "title": article.title,
+                "authors": article.authors,
+                "publish_date": article.publish_date,
+                "text": article.text,
+                "summary": article.summary,
+                "links": article.extractor.get_urls(article.html),
+                "images": filter_images(article.images),
+                "videos": article.movies
+            }
+        except Exception as e:
+            error_message = str(e)
+    raise Exception(f"Article download() failed with {error_message} on URL {url}")
+
 if option == "Single Article":
     url = st.text_input("Enter the URL of the news article:")
     if url:
         try:
             # Informationen extrahieren
-            info = get_article_info(url)
+            info = get_article_info_with_retry(url)
             
             # Markdown generieren
             markdown = generate_markdown(info, url, include_summary=False)
@@ -162,7 +186,7 @@ elif option == "Multiple Articles":
         for idx, url in enumerate(url_list):
             try:
                 # Informationen extrahieren
-                info = get_article_info(url)
+                info = get_article_info_with_retry(url)
                 
                 # Markdown generieren
                 markdown = generate_markdown(info, url, include_summary=False)
@@ -223,7 +247,7 @@ elif option == "Links in Article":
     if url:
         try:
             # Informationen extrahieren
-            info = get_article_info(url)
+            info = get_article_info_with_retry(url)
             # Links sortieren, filtern und anpassen
             unique_sorted_links = filter_and_adjust_links(info["links"], url)
             
