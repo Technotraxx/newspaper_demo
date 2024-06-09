@@ -30,14 +30,6 @@ def get_article_info_with_retry(url, retries=3):
             article.download()
             article.parse()
             article.nlp()
-            if not article.text:
-                # Manuelle Analyse für MSN
-                response = requests.get(url)
-                soup = BeautifulSoup(response.content, 'html.parser')
-                article_text = ''
-                for paragraph in soup.find_all('p'):
-                    article_text += paragraph.get_text() + '\n'
-                article.text = article_text
             return {
                 "title": article.title,
                 "authors": article.authors,
