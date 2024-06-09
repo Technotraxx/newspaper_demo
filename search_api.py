@@ -1,13 +1,14 @@
 import requests
 from bs4 import BeautifulSoup
+import streamlit as st
 
 def search_news(query):
     url = f"https://duckduckgo.com/html/?q={query}&iar=news"
     response = requests.get(url)
     
     # Debugging: Statuscode und Inhalt der Antwort anzeigen
-    print(f"Status Code: {response.status_code}")
-    print(f"Response Content: {response.content}")
+    st.write(f"Status Code: {response.status_code}")
+    st.text(f"Response Content: {response.content}")
 
     soup = BeautifulSoup(response.content, 'html.parser')
 
