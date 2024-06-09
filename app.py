@@ -28,7 +28,7 @@ def get_article_info(url):
         "publish_date": article.publish_date,
         "text": article.text,
         "summary": article.summary,
-        "links": article.links
+        "links": article.extractor.get_urls(article.html)
     }
 
 if option == "Single Article":
