@@ -290,9 +290,11 @@ elif option == "Search DuckDuckGo":
     time = st.selectbox("Choose a time range", ["d", "w", "m", "y", None], index=4)
     site = st.text_input("Enter a specific site to search within (optional):")
     exclude_site = st.text_input("Enter a site to exclude from the search (optional):")
+    region = st.selectbox("Choose a region", ["wt-wt", "us-en", "uk-en", "de-de", "fr-fr", "es-es", "it-it", "nl-nl", "ru-ru", "jp-jp", "cn-zh"])
+
     if st.button("Search"):
         if query:
-            results = search_duckduckgo(query, category=category, time=time, site=site, exclude_site=exclude_site)
+            results = search_duckduckgo(query, category=category, time=time, site=site, exclude_site=exclude_site, region=region)
             st.subheader("Found Articles:")
             urls = "\n".join(results)
             st.code(urls, language='text')
