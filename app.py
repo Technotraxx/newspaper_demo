@@ -292,4 +292,3 @@ elif option == "Search News":
                 st.write(f"{i+1}. {result}")
         else:
             st.warning("Please enter a search term.")
-
