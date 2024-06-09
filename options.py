@@ -51,23 +51,23 @@ def multiple_articles_option():
             if url:
                 try:
                     info = get_article_info_with_retry(url)
-                    all_info.append(info)
+                    all_info.append((url, info))
                 except Exception as e:
                     st.error(f"An error occurred with URL {url}: {e}")
 
         # Markdown für alle Artikel generieren
         markdown = ""
         markdown_with_summary = ""
-        for info in all_info:
+        for url, info in all_info:
             markdown += generate_markdown(info, url, include_summary=False) + "\n\n"
             markdown_with_summary += generate_markdown(info, url, include_summary=True) + "\n\n"
 
         # Anzeigen der extrahierten Informationen für alle Artikel
-        for info in all_info:
+        for index, (url, info) in enumerate(all_info):
             st.header(info['title'])
             st.write(url)
             st.write(f"Authors: {', '.join(info['authors'])} | Publish Date: {info['publish_date']}")
-            st.text_area("Article Text", info["text"], height=300, key=url)
+            st.text_area("Article Text", info["text"], height=300, key=f"{url}-{index}")
 
             with st.expander("Summary"):
                 st.write(info["summary"])
