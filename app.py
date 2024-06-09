@@ -1,6 +1,10 @@
 import streamlit as st
 from newspaper import Article
 from newspaper.configuration import Configuration
+import nltk
+
+# Sicherstellen, dass der Punkt-Tokenizer heruntergeladen ist
+nltk.download('punkt')
 
 # Streamlit App
 st.title("Newspaper Article Extractor")
