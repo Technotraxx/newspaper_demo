@@ -3,6 +3,7 @@ from newspaper import Article
 from newspaper.configuration import Configuration
 import nltk
 from urllib.parse import urljoin, urlparse
+import base64  # Importiere das base64 Modul
 
 # Sicherstellen, dass der Punkt-Tokenizer heruntergeladen ist
 nltk.download('punkt')
@@ -68,8 +69,8 @@ if option == "Single Article":
             # Informationen extrahieren
             info = get_article_info(url)
             # Anzeige der extrahierten Informationen
-            st.header(f"Title: {info['title']} ({url})")
-            st.write(info["title"])
+            st.header(f"Title: {info['title']}")
+            st.write(f"URL: {url}")
 
             st.header("Authors")
             st.write(", ".join(info["authors"]))
@@ -102,8 +103,8 @@ elif option == "Multiple Articles":
                 # Informationen extrahieren
                 info = get_article_info(url)
                 # Anzeige der extrahierten Informationen
-                st.header(f"Title: {info['title']} ({url})")
-                st.write(info["title"])
+                st.header(f"Title: {info['title']}")
+                st.write(f"URL: {url}")
 
                 st.header("Authors")
                 st.write(", ".join(info["authors"]))
@@ -138,8 +139,8 @@ elif option == "Links in Article":
             unique_sorted_links = filter_and_adjust_links(info["links"], url)
             
             # Anzeige der extrahierten Informationen
-            st.header(f"Title: {info['title']} ({url})")
-            st.write(info["title"])
+            st.header(f"Title: {info['title']}")
+            st.write(f"URL: {url}")
 
             st.header("Authors")
             st.write(", ".join(info["authors"]))
