@@ -29,9 +29,9 @@ def single_article_option():
                         st.image(img, use_column_width=True)
 
             if info['videos']:
-                st.header("Videos")
-                for video in info['videos']:
-                    st.video(video)
+                with st.expander("Videos"):
+                    for video in info['videos']:
+                        st.video(video, use_column_width=True)
 
             return markdown, markdown_with_summary
 
@@ -78,9 +78,9 @@ def multiple_articles_option():
                         st.image(img, use_column_width=True)
 
             if info['videos']:
-                st.header("Videos")
-                for video in info['videos']:
-                    st.video(video)
+                with st.expander("Videos"):
+                    for video in info['videos']:
+                        st.video(video, use_column_width=True)
 
         return markdown, markdown_with_summary
 
@@ -118,9 +118,9 @@ def links_in_article_option():
                         st.image(img, use_column_width=True)
 
             if info['videos']:
-                st.header("Videos")
-                for video in info['videos']:
-                    st.video(video)
+                with st.expander("Videos"):
+                    for video in info['videos']:
+                        st.video(video, use_column_width=True)
 
             return markdown, markdown_with_summary
 
