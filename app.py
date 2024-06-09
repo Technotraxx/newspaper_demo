@@ -2,6 +2,7 @@ import streamlit as st
 from newspaper import Article
 from newspaper.configuration import Configuration
 import nltk
+from urllib.parse import urljoin, urlparse
 
 # Sicherstellen, dass der Punkt-Tokenizer heruntergeladen ist
 nltk.download('punkt')
@@ -30,6 +31,21 @@ def get_article_info(url):
         "summary": article.summary,
         "links": article.extractor.get_urls(article.html)
     }
+
+# Funktion zum Filtern und Anpassen der Links
+def filter_and_adjust_links(links, base_url):
+    filtered_links = []
+    parsed_base_url = urlparse(base_url)
+    base_domain = f"{parsed_base_url.scheme}://{parsed_base_url.netloc}"
+    
+    for link in links:
+        if link.startswith("#") or link.startswith("javascript"):
+            continue
+        if link.startswith("/"):
+            link = urljoin(base_domain, link)
+        filtered_links.append(link)
+    
+    return sorted(set(filtered_links))
 
 if option == "Single Article":
     url = st.text_input("Enter the URL of the news article:")
@@ -89,6 +105,9 @@ elif option == "Links in Article":
         try:
             # Informationen extrahieren
             info = get_article_info(url)
+            # Links sortieren, filtern und anpassen
+            unique_sorted_links = filter_and_adjust_links(info["links"], url)
+            
             # Anzeige der extrahierten Informationen
             st.header("Title")
             st.write(info["title"])
@@ -104,9 +123,6 @@ elif option == "Links in Article":
 
             st.header("Summary")
             st.write(info["summary"])
-
-            # Links sortieren und filtern
-            unique_sorted_links = sorted(set(info["links"]))
 
             with st.expander("Links in the Article"):
                 for link in unique_sorted_links:
