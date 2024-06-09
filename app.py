@@ -1,11 +1,11 @@
 import streamlit as st
+from search_api import search_duckduckgo
+import requests
 from newspaper import Article
 from newspaper.configuration import Configuration
 import nltk
 from urllib.parse import urljoin, urlparse
 import base64
-from search_api import search_news
-import requests
 from bs4 import BeautifulSoup
 
 # Sicherstellen, dass der Punkt-Tokenizer heruntergeladen ist
@@ -17,10 +17,10 @@ st.title("Newspaper Article Extractor & Searcher")
 # Sidebar Options-Selector
 option = st.sidebar.selectbox(
     "Choose an option",
-    ("Single Article", "Multiple Articles", "Links in Article", "Search News")
+    ("Single Article", "Multiple Articles", "Links in Article", "Search DuckDuckGo")
 )
 
-# Funktion zum Extrahieren von Artikelinformationen mit Wiederholungslogik und Debugging
+# Funktion zum Extrahieren von Artikelinformationen mit Wiederholungslogik
 def get_article_info_with_retry(url, retries=3):
     config = Configuration()
     config.browser_user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0'
@@ -235,17 +235,11 @@ elif option == "Links in Article":
         try:
             # Informationen extrahieren
             info = get_article_info_with_retry(url)
-            # Links sortieren, filtern und anpassen
-            unique_sorted_links = filter_and_adjust_links(info["links"], url)
+            links = filter_and_adjust_links(info['links'], url)
             
             # Markdown generieren
             markdown = generate_markdown(info, url, include_summary=False)
             markdown_with_summary = generate_markdown(info, url, include_summary=True)
-            markdown += "\n\n## Links in the Article\n\n"
-            markdown_with_summary += "\n\n## Links in the Article\n\n"
-            for link in unique_sorted_links:
-                markdown += f"- {link}\n"
-                markdown_with_summary += f"- {link}\n"
             markdown_to_download = markdown
             markdown_with_summary_to_download = markdown_with_summary
 
@@ -276,7 +270,7 @@ elif option == "Links in Article":
                 st.write(info["summary"])
 
             with st.expander("Links in the Article"):
-                for link in unique_sorted_links:
+                for link in links:
                     st.write(link)
 
             if info['images']:
@@ -292,12 +286,16 @@ elif option == "Links in Article":
         except Exception as e:
             st.error(f"An error occurred: {e}")
 
-elif option == "Search News":
-    st.header("Search News Articles")
+elif option == "Search DuckDuckGo":
+    st.header("Search DuckDuckGo")
     query = st.text_input("Enter a search term:")
+    category = st.selectbox("Choose a category", ["news", "text", "images", "videos", "maps", "translate"])
+    time = st.selectbox("Choose a time range", ["d", "w", "m", "y", None], index=4)
+    site = st.text_input("Enter a specific site to search within (optional):")
+    exclude_site = st.text_input("Enter a site to exclude from the search (optional):")
     if st.button("Search"):
         if query:
-            results = search_news(query)
+            results = search_duckduckgo(query, category=category, time=time, site=site, exclude_site=exclude_site)
             st.subheader("Found Articles:")
             urls = "\n".join(results)
             st.code(urls, language='text')
