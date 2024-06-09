@@ -282,6 +282,7 @@ elif option == "Links in Article":
         except Exception as e:
             st.error(f"An error occurred: {e}")
 
+# Usage in Streamlit app
 elif option == "Search DuckDuckGo":
     st.header("Search DuckDuckGo")
     query = st.text_input("Enter a search term:")
