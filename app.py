@@ -105,9 +105,9 @@ elif option == "Links in Article":
             st.header("Summary")
             st.write(info["summary"])
 
-            st.header("Links in the Article")
-            for link in info["links"]:
-                st.write(link)
+            with st.expander("Links in the Article"):
+                for link in info["links"]:
+                    st.write(link)
 
         except Exception as e:
             st.error(f"An error occurred: {e}")
