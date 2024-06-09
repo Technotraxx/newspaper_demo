@@ -286,7 +286,7 @@ elif option == "Search News":
         if query:
             results = search_news(query)
             st.subheader("Found Articles:")
-            for i, result in enumerate(results):
-                st.write(f"{i+1}. {result}")
+            urls = "\n".join(results)
+            st.code(urls, language='text')
         else:
             st.warning("Please enter a search term.")
