@@ -31,7 +31,7 @@ def single_article_option():
             if info['videos']:
                 with st.expander("Videos"):
                     for video in info['videos']:
-                        st.video(video, use_column_width=True)
+                        st.video(video)
 
             return markdown, markdown_with_summary
 
@@ -80,7 +80,7 @@ def multiple_articles_option():
             if info['videos']:
                 with st.expander("Videos"):
                     for video in info['videos']:
-                        st.video(video, use_column_width=True)
+                        st.video(video)
 
         return markdown, markdown_with_summary
 
@@ -120,7 +120,7 @@ def links_in_article_option():
             if info['videos']:
                 with st.expander("Videos"):
                     for video in info['videos']:
-                        st.video(video, use_column_width=True)
+                        st.video(video)
 
             return markdown, markdown_with_summary
 
