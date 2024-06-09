@@ -140,10 +140,10 @@ if option == "Single Article":
                 st.write(info["summary"])
 
             if info['images']:
-                st.header("Images")
-                for img in info['images']:
-                    st.image(img, use_column_width=True)
-
+                with st.expander("Images"):
+                    for img in info['images']:
+                        st.image(img, use_column_width=True)
+            
             if info['videos']:
                 st.header("Videos")
                 for video in info['videos']:
@@ -185,9 +185,9 @@ elif option == "Multiple Articles":
                     st.write(info["summary"])
 
                 if info['images']:
-                    st.header("Images")
-                    for img in info['images']:
-                        st.image(img, use_column_width=True)
+                    with st.expander("Images"):
+                        for img in info['images']:
+                            st.image(img, use_column_width=True)
 
                 if info['videos']:
                     st.header("Videos")
@@ -266,10 +266,10 @@ elif option == "Links in Article":
                     st.write(link)
 
             if info['images']:
-                st.header("Images")
-                for img in info['images']:
-                    st.image(img, use_column_width=True)
-
+                with st.expander("Images"):
+                    for img in info['images']:
+                        st.image(img, use_column_width=True)
+                        
             if info['videos']:
                 st.header("Videos")
                 for video in info['videos']:
