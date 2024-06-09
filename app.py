@@ -31,13 +31,13 @@ elif option == "Search DuckDuckGo":
 st.divider()
 if markdown_to_download:
     st.download_button(
-        label="Download Articles",
+        label="Download Articles (Text Only)",
         data=markdown_to_download,
         file_name="articles.md",
         mime="text/markdown"
     )
     st.download_button(
-        label="Download with Summary",
+        label="Download with Summary and Media",
         data=markdown_with_summary_to_download,
         file_name="articles_with_summary.md",
         mime="text/markdown"
