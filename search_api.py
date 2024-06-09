@@ -1,4 +1,5 @@
 from duckduckgo_search import DDGS
+from urllib.parse import urlparse
 
 def search_duckduckgo(query, category="news", time=None, site=None, exclude_site=None, region="wt-wt"):
     ddgs = DDGS()
@@ -63,3 +64,4 @@ def search_duckduckgo(query, category="news", time=None, site=None, exclude_site
         return [result['href'] for result in filtered_results]
     else:
         return [result['url'] for result in filtered_results]
+
