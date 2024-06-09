@@ -17,4 +17,4 @@ def search_duckduckgo(query, category='news', time=None, site=None, exclude_site
     }.get(category, ddgs.text)
     
     results = search_function(keywords=query, timelimit=time, max_results=max_results)
-    return [result['url'] for result in results]
+    return [result['url'] for result in results if 'url' in result]
