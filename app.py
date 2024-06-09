@@ -48,22 +48,34 @@ def filter_and_adjust_links(links, base_url):
     
     return sorted(set(filtered_links))
 
-def generate_markdown(info, url):
+def generate_markdown(info, url, include_summary=True):
     markdown = f"# {info['title']} \n\n"
     markdown += f"**URL:** {url}\n\n"
     markdown += f"**Authors:** {', '.join(info['authors'])}\n\n"
     markdown += f"**Publish Date:** {info['publish_date']}\n\n"
     markdown += f"**Article Text:**\n\n{info['text']}\n\n"
-    markdown += f"**Summary:**\n\n{info['summary']}\n\n"
+    if include_summary:
+        markdown += f"**Summary:**\n\n{info['summary']}\n\n"
     return markdown
 
-def download_button(text, filename, label):
-    b64 = base64.b64encode(text.encode()).decode()  # some strings
-    href = f'<a href="data:file/txt;base64,{b64}" download="{filename}">{label}</a>'
-    st.markdown(href, unsafe_allow_html=True)
+markdown_to_download = ""
+markdown_with_summary_to_download = ""
 
 # Platz für den Download-Button oben
-markdown_to_download = ""
+st.divider()
+if markdown_to_download:
+    st.download_button(
+        label="Download Articles",
+        data=markdown_to_download,
+        file_name="articles.md",
+        mime="text/markdown"
+    )
+    st.download_button(
+        label="Download with Summary",
+        data=markdown_with_summary_to_download,
+        file_name="articles_with_summary.md",
+        mime="text/markdown"
+    )
 
 if option == "Single Article":
     url = st.text_input("Enter the URL of the news article:")
@@ -73,15 +85,23 @@ if option == "Single Article":
             info = get_article_info(url)
             
             # Markdown generieren
-            markdown = generate_markdown(info, url)
+            markdown = generate_markdown(info, url, include_summary=False)
+            markdown_with_summary = generate_markdown(info, url, include_summary=True)
             markdown_to_download = markdown
+            markdown_with_summary_to_download = markdown_with_summary
 
             # Platz für den Download-Button
             st.divider()
             st.download_button(
-                label="Download Article as Markdown",
+                label="Download Articles",
                 data=markdown,
                 file_name="article.md",
+                mime="text/markdown"
+            )
+            st.download_button(
+                label="Download with Summary",
+                data=markdown_with_summary,
+                file_name="article_with_summary.md",
                 mime="text/markdown"
             )
 
@@ -99,7 +119,8 @@ if option == "Single Article":
             st.text_area("Article Text", info["text"], height=300)
 
             st.header("Summary")
-            st.write(info["summary"])
+            with st.expander("Summary"):
+                st.write(info["summary"])
 
         except Exception as e:
             st.error(f"An error occurred: {e}")
@@ -109,14 +130,17 @@ elif option == "Multiple Articles":
     if urls:
         url_list = urls.split('\n')
         markdowns = []
+        markdowns_with_summary = []
         for url in url_list:
             try:
                 # Informationen extrahieren
                 info = get_article_info(url)
                 
                 # Markdown generieren
-                markdown = generate_markdown(info, url)
+                markdown = generate_markdown(info, url, include_summary=False)
+                markdown_with_summary = generate_markdown(info, url, include_summary=True)
                 markdowns.append(markdown)
+                markdowns_with_summary.append(markdown_with_summary)
 
                 # Anzeige der extrahierten Informationen
                 st.header(f"Title: {info['title']}")
@@ -132,20 +156,29 @@ elif option == "Multiple Articles":
                 st.text_area("Article Text", info["text"], height=300)
 
                 st.header("Summary")
-                st.write(info["summary"])
+                with st.expander("Summary"):
+                    st.write(info["summary"])
 
             except Exception as e:
                 st.error(f"An error occurred with URL {url}: {e}")
 
         # Gesamtes Markdown für alle Artikel generieren
         full_markdown = "\n\n---\n\n".join(markdowns)
+        full_markdown_with_summary = "\n\n---\n\n".join(markdowns_with_summary)
         markdown_to_download = full_markdown
+        markdown_with_summary_to_download = full_markdown_with_summary
 
         st.divider()
         st.download_button(
-            label="Download Articles as Markdown",
+            label="Download Articles",
             data=full_markdown,
             file_name="articles.md",
+            mime="text/markdown"
+        )
+        st.download_button(
+            label="Download with Summary",
+            data=full_markdown_with_summary,
+            file_name="articles_with_summary.md",
             mime="text/markdown"
         )
 
@@ -159,16 +192,26 @@ elif option == "Links in Article":
             unique_sorted_links = filter_and_adjust_links(info["links"], url)
             
             # Markdown generieren
-            markdown = generate_markdown(info, url)
+            markdown = generate_markdown(info, url, include_summary=False)
+            markdown_with_summary = generate_markdown(info, url, include_summary=True)
             markdown += "\n\n## Links in the Article\n\n"
+            markdown_with_summary += "\n\n## Links in the Article\n\n"
             markdown += "\n".join(unique_sorted_links)
+            markdown_with_summary += "\n".join(unique_sorted_links)
             markdown_to_download = markdown
+            markdown_with_summary_to_download = markdown_with_summary
 
             st.divider()
             st.download_button(
-                label="Download Article with Links as Markdown",
+                label="Download Articles",
                 data=markdown,
                 file_name="article_with_links.md",
+                mime="text/markdown"
+            )
+            st.download_button(
+                label="Download with Summary",
+                data=markdown_with_summary,
+                file_name="article_with_links_and_summary.md",
                 mime="text/markdown"
             )
 
@@ -186,7 +229,8 @@ elif option == "Links in Article":
             st.text_area("Article Text", info["text"], height=300)
 
             st.header("Summary")
-            st.write(info["summary"])
+            with st.expander("Summary"):
+                st.write(info["summary"])
 
             with st.expander("Links in the Article"):
                 for link in unique_sorted_links:
