@@ -105,8 +105,11 @@ elif option == "Links in Article":
             st.header("Summary")
             st.write(info["summary"])
 
+            # Links sortieren und filtern
+            unique_sorted_links = sorted(set(info["links"]))
+
             with st.expander("Links in the Article"):
-                for link in info["links"]:
+                for link in unique_sorted_links:
                     st.write(link)
 
         except Exception as e:
