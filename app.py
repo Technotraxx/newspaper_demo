@@ -31,7 +31,7 @@ def get_article_info(url):
         "text": article.text,
         "summary": article.summary,
         "links": article.extractor.get_urls(article.html),
-        "images": article.images,
+        "images": filter_images(article.images),
         "videos": article.movies
     }
 
@@ -49,6 +49,15 @@ def filter_and_adjust_links(links, base_url):
         filtered_links.append(link)
     
     return sorted(set(filtered_links))
+
+# Funktion zum Filtern von Bildern
+def filter_images(images):
+    filtered_images = []
+    for img in images:
+        if "logo" in img.lower() or "banner" in img.lower():
+            continue
+        filtered_images.append(img)
+    return filtered_images
 
 def generate_markdown(info, url, include_summary=True):
     markdown = f"# {info['title']} \n\n"
