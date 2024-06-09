@@ -54,6 +54,10 @@ def search_duckduckgo(query, category="news", time=None, site=None, exclude_site
     st.write("Raw results from DuckDuckGo API:", results)
 
     # Filter out MSN results
-    filtered_results = [result for result in results if "msn.com" not in result.get('url', '')]
+    filtered_results = [result for result in results if "msn.com" not in result.get('href', '')]
 
-    return [result['url'] for result in filtered_results]
+    # Use 'href' instead of 'url' for text category
+    if category == "text":
+        return [result['href'] for result in filtered_results]
+    else:
+        return [result['url'] for result in filtered_results]
