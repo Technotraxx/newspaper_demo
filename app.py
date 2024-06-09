@@ -6,6 +6,7 @@ from urllib.parse import urljoin, urlparse
 import base64
 from search_api import search_news
 import requests
+from bs4 import BeautifulSoup
 
 # Sicherstellen, dass der Punkt-Tokenizer heruntergeladen ist
 nltk.download('punkt', quiet=True)
@@ -29,8 +30,14 @@ def get_article_info_with_retry(url, retries=3):
             article.download()
             article.parse()
             article.nlp()
-            if not article.text:  # Falls der Artikeltext leer ist, den HTML-Inhalt debuggen
-                st.write(f"HTML content for debugging: {article.html}")
+            if not article.text:
+                # Manuelle Analyse für MSN
+                response = requests.get(url)
+                soup = BeautifulSoup(response.content, 'html.parser')
+                article_text = ''
+                for paragraph in soup.find_all('p'):
+                    article_text += paragraph.get_text() + '\n'
+                article.text = article_text
             return {
                 "title": article.title,
                 "authors": article.authors,
@@ -244,22 +251,24 @@ elif option == "Links in Article":
             markdown_with_summary = generate_markdown(info, url, include_summary=True)
             markdown += "\n\n## Links in the Article\n\n"
             markdown_with_summary += "\n\n## Links in the Article\n\n"
-            markdown += "\n".join(unique_sorted_links)
-            markdown_with_summary += "\n".join(unique_sorted_links)
+            for link in unique_sorted_links:
+                markdown += f"- {link}\n"
+                markdown_with_summary += f"- {link}\n"
             markdown_to_download = markdown
             markdown_with_summary_to_download = markdown_with_summary
 
+            # Platz für den Download-Button
             st.divider()
             st.download_button(
                 label="Download Articles",
                 data=markdown,
-                file_name="article_with_links.md",
+                file_name="article.md",
                 mime="text/markdown"
             )
             st.download_button(
                 label="Download with Summary",
                 data=markdown_with_summary,
-                file_name="article_with_links_and_summary.md",
+                file_name="article_with_summary.md",
                 mime="text/markdown"
             )
 
