@@ -4,17 +4,18 @@ from newspaper.configuration import Configuration
 import nltk
 from urllib.parse import urljoin, urlparse
 import base64  # Importiere das base64 Modul
+from search_api import search_news  # Importiere die neue Suchfunktion
 
 # Sicherstellen, dass der Punkt-Tokenizer heruntergeladen ist
 nltk.download('punkt')
 
 # Streamlit App
-st.title("Newspaper Article Extractor")
+st.title("Newspaper Article Extractor & Searcher")
 
 # Sidebar Options-Selector
 option = st.sidebar.selectbox(
     "Choose an option",
-    ("Single Article", "Multiple Articles", "Links in Article")
+    ("Single Article", "Multiple Articles", "Links in Article", "Search News")
 )
 
 # Funktion zum Extrahieren von Artikelinformationen
@@ -143,7 +144,7 @@ if option == "Single Article":
                 with st.expander("Images"):
                     for img in info['images']:
                         st.image(img, use_column_width=True)
-            
+
             if info['videos']:
                 st.header("Videos")
                 for video in info['videos']:
@@ -269,7 +270,7 @@ elif option == "Links in Article":
                 with st.expander("Images"):
                     for img in info['images']:
                         st.image(img, use_column_width=True)
-                        
+
             if info['videos']:
                 st.header("Videos")
                 for video in info['videos']:
@@ -277,3 +278,15 @@ elif option == "Links in Article":
 
         except Exception as e:
             st.error(f"An error occurred: {e}")
+
+elif option == "Search News":
+    st.header("Search News Articles")
+    query = st.text_input("Enter a search term:")
+    if st.button("Search"):
+        if query:
+            results = search_news(query)
+            st.subheader("Found Articles:")
+            for i, result in enumerate(results):
+                st.write(f"{i+1}. {result}")
+        else:
+            st.warning("Please enter a search term.")
