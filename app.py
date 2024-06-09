@@ -54,7 +54,11 @@ def filter_and_adjust_links(links, base_url):
 def filter_images(images):
     filtered_images = []
     for img in images:
-        if "logo" in img.lower() or "banner" in img.lower():
+        if ("logo" in img.lower() or
+            "banner" in img.lower() or
+            "icon" in img.lower() or
+            "assets" in img.lower() or
+            img.lower().endswith('.svg')):
             continue
         filtered_images.append(img)
     return filtered_images
