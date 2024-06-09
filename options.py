@@ -14,21 +14,6 @@ def single_article_option():
             markdown = generate_markdown(info, url, include_summary=False)
             markdown_with_summary = generate_markdown(info, url, include_summary=True)
 
-            # Platz für den Download-Button
-            st.divider()
-            st.download_button(
-                label="Download Article",
-                data=markdown,
-                file_name="article.md",
-                mime="text/markdown"
-            )
-            st.download_button(
-                label="Download with Summary",
-                data=markdown_with_summary,
-                file_name="article_with_summary.md",
-                mime="text/markdown"
-            )
-
             # Anzeige der extrahierten Informationen
             st.header(info['title'])
             st.write(url)
@@ -48,8 +33,11 @@ def single_article_option():
                 for video in info['videos']:
                     st.video(video)
 
+            return markdown, markdown_with_summary
+
         except Exception as e:
             st.error(f"An error occurred: {e}")
+            return "", ""
 
 # Funktion für die Option "Multiple Articles"
 def multiple_articles_option():
@@ -73,21 +61,6 @@ def multiple_articles_option():
             markdown += generate_markdown(info, url, include_summary=False) + "\n\n"
             markdown_with_summary += generate_markdown(info, url, include_summary=True) + "\n\n"
 
-        # Platz für den Download-Button
-        st.divider()
-        st.download_button(
-            label="Download Articles",
-            data=markdown,
-            file_name="articles.md",
-            mime="text/markdown"
-        )
-        st.download_button(
-            label="Download with Summary",
-            data=markdown_with_summary,
-            file_name="articles_with_summary.md",
-            mime="text/markdown"
-        )
-
         # Anzeigen der extrahierten Informationen für alle Artikel
         for info in all_info:
             st.header(info['title'])
@@ -108,6 +81,8 @@ def multiple_articles_option():
                 for video in info['videos']:
                     st.video(video)
 
+        return markdown, markdown_with_summary
+
 # Funktion für die Option "Links in Article"
 def links_in_article_option():
     url = st.text_input("Enter the URL of the news article:")
@@ -120,21 +95,6 @@ def links_in_article_option():
             # Markdown generieren
             markdown = generate_markdown(info, url, include_summary=False)
             markdown_with_summary = generate_markdown(info, url, include_summary=True)
-
-            # Platz für den Download-Button
-            st.divider()
-            st.download_button(
-                label="Download Article",
-                data=markdown,
-                file_name="article.md",
-                mime="text/markdown"
-            )
-            st.download_button(
-                label="Download with Summary",
-                data=markdown_with_summary,
-                file_name="article_with_summary.md",
-                mime="text/markdown"
-            )
 
             # Anzeige der extrahierten Informationen
             st.header(info['title'])
@@ -159,8 +119,11 @@ def links_in_article_option():
                 for video in info['videos']:
                     st.video(video)
 
+            return markdown, markdown_with_summary
+
         except Exception as e:
             st.error(f"An error occurred: {e}")
+            return "", ""
 
 # Funktion für die Option "Search DuckDuckGo"
 def search_duckduckgo_option():
