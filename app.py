@@ -14,6 +14,19 @@ option = st.sidebar.selectbox(
 markdown_to_download = ""
 markdown_with_summary_to_download = ""
 
+# Optionen für die verschiedenen Modi
+if option == "Single Article":
+    markdown_to_download, markdown_with_summary_to_download = single_article_option()
+
+elif option == "Multiple Articles":
+    markdown_to_download, markdown_with_summary_to_download = multiple_articles_option()
+
+elif option == "Links in Article":
+    markdown_to_download, markdown_with_summary_to_download = links_in_article_option()
+
+elif option == "Search DuckDuckGo":
+    search_duckduckgo_option()
+
 # Platz für den Download-Button oben
 st.divider()
 if markdown_to_download:
@@ -29,16 +42,3 @@ if markdown_to_download:
         file_name="articles_with_summary.md",
         mime="text/markdown"
     )
-
-# Optionen für die verschiedenen Modi
-if option == "Single Article":
-    markdown_to_download, markdown_with_summary_to_download = single_article_option()
-
-elif option == "Multiple Articles":
-    markdown_to_download, markdown_with_summary_to_download = multiple_articles_option()
-
-elif option == "Links in Article":
-    markdown_to_download, markdown_with_summary_to_download = links_in_article_option()
-
-elif option == "Search DuckDuckGo":
-    search_duckduckgo_option()
