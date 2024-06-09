@@ -168,66 +168,62 @@ elif option == "Multiple Articles":
     urls = st.text_area("Enter the URLs of the news articles (one per line):")
     if urls:
         url_list = urls.split('\n')
-        markdowns = []
-        markdowns_with_summary = []
-        for idx, url in enumerate(url_list):
-            try:
-                # Informationen extrahieren
-                info = get_article_info_with_retry(url)
-                
-                # Markdown generieren
-                markdown = generate_markdown(info, url, include_summary=False)
-                markdown_with_summary = generate_markdown(info, url, include_summary=True)
-                markdowns.append(markdown)
-                markdowns_with_summary.append(markdown_with_summary)
+        all_info = []
+        for url in url_list:
+            url = url.strip()
+            if url:
+                try:
+                    info = get_article_info_with_retry(url)
+                    all_info.append(info)
+                except Exception as e:
+                    st.error(f"An error occurred with URL {url}: {e}")
 
-                # Divider zwischen Artikeln
-                if idx > 0:
-                    st.divider()
+        # Markdown für alle Artikel generieren
+        markdown = ""
+        markdown_with_summary = ""
+        for info in all_info:
+            markdown += generate_markdown(info, url, include_summary=False) + "\n\n"
+            markdown_with_summary += generate_markdown(info, url, include_summary=True) + "\n\n"
+        
+        markdown_to_download = markdown
+        markdown_with_summary_to_download = markdown_with_summary
 
-                # Anzeige der extrahierten Informationen
-                st.header(info['title'])
-                st.write(url)
-
-                st.write(f"Authors: {', '.join(info['authors'])} | Publish Date: {info['publish_date']}")
-
-                st.text_area("Article Text", info["text"], height=300, key=url)
-
-                with st.expander("Summary"):
-                    st.write(info["summary"])
-
-                if info['images']:
-                    with st.expander("Images"):
-                        for img in info['images']:
-                            st.image(img, use_column_width=True)
-
-                if info['videos']:
-                    st.header("Videos")
-                    for video in info['videos']:
-                        st.video(video)
-
-            except Exception as e:
-                st.error(f"An error occurred with URL {url}: {e}")
-
-        # Gesamtes Markdown für alle Artikel generieren
-        full_markdown = "\n\n---\n\n".join(markdowns)
-        full_markdown_with_summary = "\n\n---\n\n".join(markdowns_with_summary)
-        markdown_to_download = full_markdown
-        markdown_with_summary_to_download = full_markdown_with_summary
-
+        # Platz für den Download-Button
         st.divider()
         st.download_button(
             label="Download Articles",
-            data=full_markdown,
+            data=markdown,
             file_name="articles.md",
             mime="text/markdown"
         )
         st.download_button(
             label="Download with Summary",
-            data=full_markdown_with_summary,
+            data=markdown_with_summary,
             file_name="articles_with_summary.md",
             mime="text/markdown"
         )
+
+        # Anzeigen der extrahierten Informationen für alle Artikel
+        for info in all_info:
+            st.header(info['title'])
+            st.write(url)
+
+            st.write(f"Authors: {', '.join(info['authors'])} | Publish Date: {info['publish_date']}")
+
+            st.text_area("Article Text", info["text"], height=300, key=url)
+
+            with st.expander("Summary"):
+                st.write(info["summary"])
+
+            if info['images']:
+                with st.expander("Images"):
+                    for img in info['images']:
+                        st.image(img, use_column_width=True)
+
+            if info['videos']:
+                st.header("Videos")
+                for video in info['videos']:
+                    st.video(video)
 
 elif option == "Links in Article":
     url = st.text_input("Enter the URL of the news article:")
