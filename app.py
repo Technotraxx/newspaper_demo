@@ -3,8 +3,8 @@ from newspaper import Article
 from newspaper.configuration import Configuration
 import nltk
 from urllib.parse import urljoin, urlparse
-import base64  # Importiere das base64 Modul
-from search_api import search_news  # Importiere die neue Suchfunktion
+import base64
+from search_api import search_news
 
 # Sicherstellen, dass der Punkt-Tokenizer heruntergeladen ist
 nltk.download('punkt', quiet=True)
@@ -135,7 +135,7 @@ if option == "Single Article":
 
             st.write(f"Authors: {', '.join(info['authors'])} | Publish Date: {info['publish_date']}")
 
-            st.text_area("Article Text", info["text"], height=300)
+            st.text_area("Article Text", info["text"], height=300, key=url)
 
             with st.expander("Summary"):
                 st.write(info["summary"])
@@ -180,7 +180,7 @@ elif option == "Multiple Articles":
 
                 st.write(f"Authors: {', '.join(info['authors'])} | Publish Date: {info['publish_date']}")
 
-                st.text_area("Article Text", info["text"], height=300)
+                st.text_area("Article Text", info["text"], height=300, key=url)
 
                 with st.expander("Summary"):
                     st.write(info["summary"])
@@ -257,7 +257,7 @@ elif option == "Links in Article":
 
             st.write(f"Authors: {', '.join(info['authors'])} | Publish Date: {info['publish_date']}")
 
-            st.text_area("Article Text", info["text"], height=300)
+            st.text_area("Article Text", info["text"], height=300, key=url)
 
             with st.expander("Summary"):
                 st.write(info["summary"])
