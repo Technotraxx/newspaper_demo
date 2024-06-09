@@ -59,20 +59,25 @@ def filter_images(images):
     return filtered_images
 
 # Funktion zum Generieren von Markdown
-def generate_markdown(info, url, include_summary=True):
+def generate_markdown(info, url, include_summary=True, include_media=True):
     markdown = f"# {info['title']} \n\n"
     markdown += f"**URL:** {url}\n\n"
     markdown += f"**Authors:** {', '.join(info['authors'])}\n\n"
     markdown += f"**Publish Date:** {info['publish_date']}\n\n"
     markdown += f"**Article Text:**\n\n{info['text']}\n\n"
+    
     if include_summary:
         markdown += f"**Summary:**\n\n{info['summary']}\n\n"
-    if info['images']:
-        markdown += "\n\n## Images\n\n"
-        for img in info['images']:
-            markdown += f"![Image]({img})\n\n"
-    if info['videos']:
-        markdown += "\n\n## Videos\n\n"
-        for video in info['videos']:
-            markdown += f"[Video]({video})\n\n"
+    
+    if include_media:
+        if info['images']:
+            markdown += "\n\n## Images\n\n"
+            for img in info['images']:
+                markdown += f"![Image]({img})\n\n"
+        if info['videos']:
+            markdown += "\n\n## Videos\n\n"
+            for video in info['videos']:
+                markdown += f"[Video]({video})\n\n"
+                
     return markdown
+
