@@ -284,9 +284,7 @@ elif option == "Search News":
     query = st.text_input("Enter a search term:")
     if st.button("Search"):
         if query:
-            st.write(f"Search term: {query}")  # Debugging: Suchbegriff anzeigen
             results = search_news(query)
-            st.write(f"Results: {results}")  # Debugging: Ergebnisse anzeigen
             st.subheader("Found Articles:")
             for i, result in enumerate(results):
                 st.write(f"{i+1}. {result}")
