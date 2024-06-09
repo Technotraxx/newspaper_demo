@@ -106,19 +106,13 @@ if option == "Single Article":
             )
 
             # Anzeige der extrahierten Informationen
-            st.header(f"Title: {info['title']}")
-            st.write(f"URL: {url}")
+            st.header(info['title'])
+            st.write(url)
 
-            st.header("Authors")
-            st.write(", ".join(info["authors"]))
+            st.write(f"Authors: {', '.join(info['authors'])} | Publish Date: {info['publish_date']}")
 
-            st.header("Publish Date")
-            st.write(info["publish_date"])
-
-            st.header("Article Text")
             st.text_area("Article Text", info["text"], height=300)
 
-            st.header("Summary")
             with st.expander("Summary"):
                 st.write(info["summary"])
 
@@ -131,7 +125,7 @@ elif option == "Multiple Articles":
         url_list = urls.split('\n')
         markdowns = []
         markdowns_with_summary = []
-        for url in url_list:
+        for idx, url in enumerate(url_list):
             try:
                 # Informationen extrahieren
                 info = get_article_info(url)
@@ -142,20 +136,18 @@ elif option == "Multiple Articles":
                 markdowns.append(markdown)
                 markdowns_with_summary.append(markdown_with_summary)
 
+                # Divider zwischen Artikeln
+                if idx > 0:
+                    st.divider()
+
                 # Anzeige der extrahierten Informationen
-                st.header(f"Title: {info['title']}")
-                st.write(f"URL: {url}")
+                st.header(info['title'])
+                st.write(url)
 
-                st.header("Authors")
-                st.write(", ".join(info["authors"]))
+                st.write(f"Authors: {', '.join(info['authors'])} | Publish Date: {info['publish_date']}")
 
-                st.header("Publish Date")
-                st.write(info["publish_date"])
-
-                st.header("Article Text")
                 st.text_area("Article Text", info["text"], height=300)
 
-                st.header("Summary")
                 with st.expander("Summary"):
                     st.write(info["summary"])
 
@@ -216,19 +208,13 @@ elif option == "Links in Article":
             )
 
             # Anzeige der extrahierten Informationen
-            st.header(f"Title: {info['title']}")
-            st.write(f"URL: {url}")
+            st.header(info['title'])
+            st.write(url)
 
-            st.header("Authors")
-            st.write(", ".join(info["authors"]))
+            st.write(f"Authors: {', '.join(info['authors'])} | Publish Date: {info['publish_date']}")
 
-            st.header("Publish Date")
-            st.write(info["publish_date"])
-
-            st.header("Article Text")
             st.text_area("Article Text", info["text"], height=300)
 
-            st.header("Summary")
             with st.expander("Summary"):
                 st.write(info["summary"])
 
