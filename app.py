@@ -7,7 +7,7 @@ import base64  # Importiere das base64 Modul
 from search_api import search_news  # Importiere die neue Suchfunktion
 
 # Sicherstellen, dass der Punkt-Tokenizer heruntergeladen ist
-nltk.download('punkt')
+nltk.download('punkt', quiet=True)
 
 # Streamlit App
 st.title("Newspaper Article Extractor & Searcher")
