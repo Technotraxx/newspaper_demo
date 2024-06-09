@@ -37,7 +37,8 @@ def single_article_option():
 
         except Exception as e:
             st.error(f"An error occurred: {e}")
-            return "", ""
+
+    return "", ""
 
 # Funktion für die Option "Multiple Articles"
 def multiple_articles_option():
@@ -83,6 +84,8 @@ def multiple_articles_option():
 
         return markdown, markdown_with_summary
 
+    return "", ""
+
 # Funktion für die Option "Links in Article"
 def links_in_article_option():
     url = st.text_input("Enter the URL of the news article:")
@@ -123,7 +126,8 @@ def links_in_article_option():
 
         except Exception as e:
             st.error(f"An error occurred: {e}")
-            return "", ""
+
+    return "", ""
 
 # Funktion für die Option "Search DuckDuckGo"
 def search_duckduckgo_option():
