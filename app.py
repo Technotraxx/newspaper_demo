@@ -1,6 +1,4 @@
 import streamlit as st
-from search_api import search_duckduckgo
-from article_utils import get_article_info_with_retry, generate_markdown, filter_and_adjust_links
 from options import single_article_option, multiple_articles_option, links_in_article_option, search_duckduckgo_option
 
 # Streamlit App
