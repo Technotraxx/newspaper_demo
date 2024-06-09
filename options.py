@@ -11,8 +11,8 @@ def single_article_option():
             info = get_article_info_with_retry(url)
 
             # Markdown generieren
-            markdown = generate_markdown(info, url, include_summary=False)
-            markdown_with_summary = generate_markdown(info, url, include_summary=True)
+            markdown = generate_markdown(info, url, include_summary=False, include_media=False)
+            markdown_with_summary = generate_markdown(info, url, include_summary=True, include_media=True)
 
             # Anzeige der extrahierten Informationen
             st.header(info['title'])
@@ -46,7 +46,7 @@ def multiple_articles_option():
     if urls:
         url_list = urls.split('\n')
         all_info = []
-        for url in url_list:
+        for idx, url in enumerate(url_list):
             url = url.strip()
             if url:
                 try:
@@ -59,15 +59,15 @@ def multiple_articles_option():
         markdown = ""
         markdown_with_summary = ""
         for url, info in all_info:
-            markdown += generate_markdown(info, url, include_summary=False) + "\n\n"
-            markdown_with_summary += generate_markdown(info, url, include_summary=True) + "\n\n"
+            markdown += generate_markdown(info, url, include_summary=False, include_media=False) + "\n\n"
+            markdown_with_summary += generate_markdown(info, url, include_summary=True, include_media=True) + "\n\n"
 
         # Anzeigen der extrahierten Informationen für alle Artikel
-        for index, (url, info) in enumerate(all_info):
+        for idx, (url, info) in enumerate(all_info):
             st.header(info['title'])
             st.write(url)
             st.write(f"Authors: {', '.join(info['authors'])} | Publish Date: {info['publish_date']}")
-            st.text_area("Article Text", info["text"], height=300, key=f"{url}-{index}")
+            st.text_area("Article Text", info["text"], height=300, key=f"{url}-{idx}")
 
             with st.expander("Summary"):
                 st.write(info["summary"])
@@ -96,8 +96,8 @@ def links_in_article_option():
             links = filter_and_adjust_links(info['links'], url)
 
             # Markdown generieren
-            markdown = generate_markdown(info, url, include_summary=False)
-            markdown_with_summary = generate_markdown(info, url, include_summary=True)
+            markdown = generate_markdown(info, url, include_summary=False, include_media=False)
+            markdown_with_summary = generate_markdown(info, url, include_summary=True, include_media=True)
 
             # Anzeige der extrahierten Informationen
             st.header(info['title'])
