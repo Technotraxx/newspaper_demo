@@ -30,7 +30,9 @@ def get_article_info(url):
         "publish_date": article.publish_date,
         "text": article.text,
         "summary": article.summary,
-        "links": article.extractor.get_urls(article.html)
+        "links": article.extractor.get_urls(article.html),
+        "images": article.images,
+        "videos": article.movies
     }
 
 # Funktion zum Filtern und Anpassen der Links
@@ -56,6 +58,14 @@ def generate_markdown(info, url, include_summary=True):
     markdown += f"**Article Text:**\n\n{info['text']}\n\n"
     if include_summary:
         markdown += f"**Summary:**\n\n{info['summary']}\n\n"
+    if info['images']:
+        markdown += "\n\n## Images\n\n"
+        for img in info['images']:
+            markdown += f"![Image]({img})\n\n"
+    if info['videos']:
+        markdown += "\n\n## Videos\n\n"
+        for video in info['videos']:
+            markdown += f"[Video]({video})\n\n"
     return markdown
 
 markdown_to_download = ""
@@ -116,6 +126,16 @@ if option == "Single Article":
             with st.expander("Summary"):
                 st.write(info["summary"])
 
+            if info['images']:
+                st.header("Images")
+                for img in info['images']:
+                    st.image(img, use_column_width=True)
+
+            if info['videos']:
+                st.header("Videos")
+                for video in info['videos']:
+                    st.video(video)
+
         except Exception as e:
             st.error(f"An error occurred: {e}")
 
@@ -150,6 +170,16 @@ elif option == "Multiple Articles":
 
                 with st.expander("Summary"):
                     st.write(info["summary"])
+
+                if info['images']:
+                    st.header("Images")
+                    for img in info['images']:
+                        st.image(img, use_column_width=True)
+
+                if info['videos']:
+                    st.header("Videos")
+                    for video in info['videos']:
+                        st.video(video)
 
             except Exception as e:
                 st.error(f"An error occurred with URL {url}: {e}")
@@ -221,6 +251,16 @@ elif option == "Links in Article":
             with st.expander("Links in the Article"):
                 for link in unique_sorted_links:
                     st.write(link)
+
+            if info['images']:
+                st.header("Images")
+                for img in info['images']:
+                    st.image(img, use_column_width=True)
+
+            if info['videos']:
+                st.header("Videos")
+                for video in info['videos']:
+                    st.video(video)
 
         except Exception as e:
             st.error(f"An error occurred: {e}")
