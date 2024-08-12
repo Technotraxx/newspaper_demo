@@ -44,7 +44,7 @@ def jina_reader_option(jina_api_key, gemini_api_key):
                             st.session_state.jina_response = response.json()
                             st.session_state.extracted_text = st.session_state.jina_response.get('text', '')
                             st.success("Text extracted successfully!")
-                            logger.info("Text extraction successful")
+                            logger.info("Text extraction successful (JSON response)")
                         except json.JSONDecodeError as json_err:
                             st.error(f"Error decoding JSON from Jina API: {str(json_err)}")
                             logger.error(f"JSON decode error. Response content: {response.text[:1000]}")  # Log first 1000 characters
@@ -52,12 +52,6 @@ def jina_reader_option(jina_api_key, gemini_api_key):
                         st.session_state.extracted_text = response.text
                         st.success("Text extracted successfully (non-JSON response)!")
                         logger.info("Text extraction successful (non-JSON response)")
-                    
-                    if st.session_state.extracted_text:
-                        with st.expander("View Extracted Text"):
-                            st.markdown(st.session_state.extracted_text)
-                    else:
-                        st.warning("No text was extracted from the URL.")
                 else:
                     st.error(f"Error: Unable to extract text. Status code: {response.status_code}")
                     logger.error(f"Jina API error: Status code {response.status_code}")
@@ -71,7 +65,7 @@ def jina_reader_option(jina_api_key, gemini_api_key):
         else:
             st.warning("Please enter a URL and make sure you've entered your Jina.AI API key in the sidebar.")
 
-    # Display extracted text and download button if available
+    # Display extracted text and related information
     if st.session_state.extracted_text:
         with st.expander("View Extracted Text"):
             st.markdown(st.session_state.extracted_text)
@@ -84,12 +78,14 @@ def jina_reader_option(jina_api_key, gemini_api_key):
         )
 
         # Display image and link summaries if available
-        if st.session_state.jina_response:
-            with st.expander("Image Summary"):
-                st.markdown(st.session_state.jina_response.get('images_summary', 'No image summary available'))
+        if isinstance(st.session_state.jina_response, dict):
+            if 'images_summary' in st.session_state.jina_response:
+                with st.expander("Image Summary"):
+                    st.markdown(st.session_state.jina_response['images_summary'])
             
-            with st.expander("Links Summary"):
-                st.markdown(st.session_state.jina_response.get('links_summary', 'No links summary available'))
+            if 'links_summary' in st.session_state.jina_response:
+                with st.expander("Links Summary"):
+                    st.markdown(st.session_state.jina_response['links_summary'])
 
         # Summarize with Gemini button
         if st.button("Summarize with Gemini"):
@@ -105,7 +101,7 @@ def jina_reader_option(jina_api_key, gemini_api_key):
             else:
                 st.warning("Please enter your Google Gemini LLM API key in the sidebar.")
 
-    # Display summary and download button if available
+    # Display summary if available
     if st.session_state.summary:
         st.subheader("Gemini Summary")
         st.markdown(st.session_state.summary)
