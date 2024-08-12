@@ -34,7 +34,7 @@ elif option == "Search DuckDuckGo":
     search_duckduckgo_option()
 
 elif option == "Jina.AI Reader":
-    jina_reader_option(jina_api_key)
+    jina_reader_option(jina_api_key, gemini_api_key)
 
 # Platz für den Download-Button oben
 st.divider()
