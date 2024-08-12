@@ -1,6 +1,7 @@
 import streamlit as st
 from search_api import search_duckduckgo
 from article_utils import get_article_info_with_retry, generate_markdown, filter_and_adjust_links
+from jina_reader import jina_reader_option
 
 # Funktion für die Option "Single Article"
 def single_article_option():
