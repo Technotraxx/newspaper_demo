@@ -12,15 +12,16 @@ def jina_reader_option():
                 jina_url = f'https://r.jina.ai/{url}'
                 headers = {
                     'Authorization': f'Bearer {api_key}',
-                    'X-With-Images-Summary': 'true',
-                    'X-With-Links-Summary': 'true'
-                    }
+                    'X-Return-Format': 'markdown'
+                }
 
                 response = requests.get(jina_url, headers=headers)
                 
                 if response.status_code == 200:
-                    st.subheader("Extracted Text:")
-                    st.markdown(response.text)
+                    st.success("Text extracted successfully!")
+                    
+                    with st.expander("View Extracted Text"):
+                        st.markdown(response.text)
                     
                     # Add a download button for the extracted text
                     st.download_button(
