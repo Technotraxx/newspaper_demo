@@ -5,6 +5,11 @@ from jina_reader import jina_reader_option
 # Streamlit App
 st.title("Newspaper Article Extractor & Searcher")
 
+# Sidebar API Key Inputs
+st.sidebar.header("API Keys")
+jina_api_key = st.sidebar.text_input("Enter your Jina.AI API key:", type="password", key="jina_api_key")
+gemini_api_key = st.sidebar.text_input("Enter your Google Gemini LLM API key:", type="password", key="gemini_api_key")
+
 # Sidebar Options-Selector
 option = st.sidebar.selectbox(
     "Choose an option",
@@ -29,7 +34,7 @@ elif option == "Search DuckDuckGo":
     search_duckduckgo_option()
 
 elif option == "Jina.AI Reader":
-    jina_reader_option()
+    jina_reader_option(jina_api_key)
 
 # Platz für den Download-Button oben
 st.divider()
