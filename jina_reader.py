@@ -25,7 +25,8 @@ def jina_reader_option(jina_api_key, gemini_api_key):
                 jina_url = f'https://r.jina.ai/{url}'
                 headers = {
                     'Authorization': f'Bearer {jina_api_key}',
-                    'X-Return-Format': 'markdown'
+                    'X-With-Images-Summary': 'true',
+                    'X-With-Links-Summary': 'true'
                 }
 
                 response = requests.get(jina_url, headers=headers)
