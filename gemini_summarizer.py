@@ -1,6 +1,10 @@
 import google.generativeai as genai
+import logging
+
+logger = logging.getLogger(__name__)
 
 def summarize_with_gemini(text, api_key):
+    logger.info("Configuring Gemini API")
     genai.configure(api_key=api_key)
 
     # Create the model
@@ -12,6 +16,7 @@ def summarize_with_gemini(text, api_key):
         "response_mime_type": "text/plain",
     }
 
+    logger.info("Creating Gemini model")
     model = genai.GenerativeModel(
         model_name="gemini-1.5-flash",
         generation_config=generation_config,
@@ -19,6 +24,8 @@ def summarize_with_gemini(text, api_key):
     )
 
     prompt = f"Here is the text you need to summarize:\n<text_to_summarize>\n{text}\n</text_to_summarize>"
+    logger.info("Generating content with Gemini")
     response = model.generate_content(prompt)
     
+    logger.info("Gemini summarization completed")
     return response.text
