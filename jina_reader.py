@@ -33,22 +33,38 @@ def jina_reader_option(jina_api_key, gemini_api_key):
                 }
                 response = requests.get(jina_url, headers=headers)
                 
+                logger.info(f"Jina API response status code: {response.status_code}")
+                logger.info(f"Jina API response headers: {response.headers}")
+                logger.info(f"Jina API response content type: {response.headers.get('Content-Type')}")
+                
                 if response.status_code == 200:
-                    st.success("Text extracted successfully!")
-                    st.session_state.jina_response = response.json()
-                    st.session_state.extracted_text = st.session_state.jina_response.get('text', '')
-                    logger.info("Text extraction successful")
+                    content_type = response.headers.get('Content-Type', '')
+                    if 'application/json' in content_type:
+                        try:
+                            st.session_state.jina_response = response.json()
+                            st.session_state.extracted_text = st.session_state.jina_response.get('text', '')
+                            st.success("Text extracted successfully!")
+                            logger.info("Text extraction successful")
+                        except json.JSONDecodeError as json_err:
+                            st.error(f"Error decoding JSON from Jina API: {str(json_err)}")
+                            logger.error(f"JSON decode error. Response content: {response.text[:1000]}")  # Log first 1000 characters
+                    else:
+                        st.session_state.extracted_text = response.text
+                        st.success("Text extracted successfully (non-JSON response)!")
+                        logger.info("Text extraction successful (non-JSON response)")
+                    
+                    if st.session_state.extracted_text:
+                        with st.expander("View Extracted Text"):
+                            st.markdown(st.session_state.extracted_text)
+                    else:
+                        st.warning("No text was extracted from the URL.")
                 else:
                     st.error(f"Error: Unable to extract text. Status code: {response.status_code}")
                     logger.error(f"Jina API error: Status code {response.status_code}")
-                    if response.text:
-                        logger.error(f"Jina API error response: {response.text}")
+                    logger.error(f"Jina API error response: {response.text[:1000]}")  # Log first 1000 characters
             except requests.exceptions.RequestException as e:
                 st.error(f"An error occurred during the request to Jina API: {str(e)}")
                 logger.exception("Exception during Jina API request")
-            except json.JSONDecodeError:
-                st.error("Error decoding JSON response from Jina API")
-                logger.exception("JSON decode error from Jina API response")
             except Exception as e:
                 st.error(f"An unexpected error occurred: {str(e)}")
                 logger.exception("Unexpected exception during text extraction")
