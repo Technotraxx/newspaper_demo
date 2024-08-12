@@ -12,8 +12,9 @@ def jina_reader_option():
                 jina_url = f'https://r.jina.ai/{url}'
                 headers = {
                     'Authorization': f'Bearer {api_key}',
-                    'X-Return-Format': 'markdown'
-                }
+                    'X-With-Images-Summary': 'true',
+                    'X-With-Links-Summary': 'true'
+                    }
 
                 response = requests.get(jina_url, headers=headers)
                 
