@@ -1,5 +1,6 @@
 import streamlit as st
 from options import single_article_option, multiple_articles_option, links_in_article_option, search_duckduckgo_option
+from jina_reader import jina_reader_option
 
 # Streamlit App
 st.title("Newspaper Article Extractor & Searcher")
@@ -7,7 +8,7 @@ st.title("Newspaper Article Extractor & Searcher")
 # Sidebar Options-Selector
 option = st.sidebar.selectbox(
     "Choose an option",
-    ("Single Article", "Multiple Articles", "Links in Article", "Search DuckDuckGo")
+    ("Single Article", "Multiple Articles", "Links in Article", "Search DuckDuckGo", "Jina.AI Reader")
 )
 
 # Globale Variablen für Markdown zum Download
@@ -26,6 +27,9 @@ elif option == "Links in Article":
 
 elif option == "Search DuckDuckGo":
     search_duckduckgo_option()
+
+elif option == "Jina.AI Reader":
+    jina_reader_option()
 
 # Platz für den Download-Button oben
 st.divider()
