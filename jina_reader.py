@@ -1,10 +1,9 @@
 import streamlit as st
 import requests
 
-def jina_reader_option():
+def jina_reader_option(api_key):
     st.header("Jina.AI Reader")
     url = st.text_input("Enter the URL of the webpage you want to extract text from:")
-    api_key = st.text_input("Enter your Jina.AI API key:", type="password")
 
     if st.button("Extract Text"):
         if url and api_key:
@@ -12,9 +11,8 @@ def jina_reader_option():
                 jina_url = f'https://r.jina.ai/{url}'
                 headers = {
                     'Authorization': f'Bearer {api_key}',
-                    "X-With-Links-Summary": "true",
-                    "X-With-Images-Summary": "true"
-                    }
+                    'X-Return-Format': 'markdown'
+                }
 
                 response = requests.get(jina_url, headers=headers)
                 
@@ -36,4 +34,4 @@ def jina_reader_option():
             except Exception as e:
                 st.error(f"An error occurred: {e}")
         else:
-            st.warning("Please enter both a URL and your Jina.AI API key.")
+            st.warning("Please enter a URL and make sure you've entered your Jina.AI API key in the sidebar.")
