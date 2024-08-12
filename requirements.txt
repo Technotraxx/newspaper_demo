@@ -6,3 +6,4 @@ nltk
 beautifulsoup4
 requests
 duckduckgo_search
+google-generativeai
