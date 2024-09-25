@@ -1,10 +1,21 @@
 from newspaper import Article
 from newspaper.configuration import Configuration
-import nltk
 from urllib.parse import urljoin, urlparse
 
-# Sicherstellen, dass der Punkt-Tokenizer heruntergeladen ist
-nltk.download('punkt')
+import nltk
+import ssl
+
+try:
+    _create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+    pass
+else:
+    ssl._create_default_https_context = _create_unverified_https_context
+
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
 
 # Funktion zum Extrahieren von Artikelinformationen mit Wiederholungslogik
 def get_article_info_with_retry(url, retries=3):
