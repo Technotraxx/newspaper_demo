@@ -2,7 +2,7 @@ streamlit
 newspaper3k
 lxml
 lxml_html_clean
-nltk
+nltk==3.8.1
 beautifulsoup4
 requests
 duckduckgo_search
