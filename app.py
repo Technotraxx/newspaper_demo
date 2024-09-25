@@ -2,6 +2,14 @@ import streamlit as st
 from options import single_article_option, multiple_articles_option, links_in_article_option, search_duckduckgo_option
 from jina_reader import jina_reader_option
 
+import nltk
+
+@st.cache_resource
+def download_nltk_data():
+    nltk.download('punkt')
+
+download_nltk_data()
+
 # Streamlit App
 st.title("Newspaper Article Extractor & Searcher")
 
