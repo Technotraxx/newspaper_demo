@@ -4,18 +4,26 @@ from urllib.parse import urljoin, urlparse
 
 import nltk
 import ssl
+import os
 
-try:
-    _create_unverified_https_context = ssl._create_unverified_context
-except AttributeError:
-    pass
-else:
-    ssl._create_default_https_context = _create_unverified_https_context
+def download_nltk_data():
+    try:
+        _create_unverified_https_context = ssl._create_unverified_context
+    except AttributeError:
+        pass
+    else:
+        ssl._create_default_https_context = _create_unverified_https_context
 
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    nltk.download('punkt')
+    nltk_data_dir = os.path.join(os.getcwd(), 'nltk_data')
+    os.makedirs(nltk_data_dir, exist_ok=True)
+    nltk.data.path.append(nltk_data_dir)
+
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        nltk.download('punkt', download_dir=nltk_data_dir)
+
+download_nltk_data()
 
 # Funktion zum Extrahieren von Artikelinformationen mit Wiederholungslogik
 def get_article_info_with_retry(url, retries=3):
