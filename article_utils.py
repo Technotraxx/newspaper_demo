@@ -4,7 +4,7 @@ import nltk
 from urllib.parse import urljoin, urlparse
 
 # Sicherstellen, dass der Punkt-Tokenizer heruntergeladen ist
-nltk.download('punkt', quiet=True)
+nltk.download('punkt')
 
 # Funktion zum Extrahieren von Artikelinformationen mit Wiederholungslogik
 def get_article_info_with_retry(url, retries=3):
